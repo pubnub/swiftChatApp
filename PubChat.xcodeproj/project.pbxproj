@@ -13,6 +13,11 @@
 		092CF72E1B3C64D000DBEC34 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 092CF72D1B3C64D000DBEC34 /* Images.xcassets */; };
 		092CF7311B3C64D000DBEC34 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 092CF72F1B3C64D000DBEC34 /* LaunchScreen.xib */; };
 		092CF73D1B3C64D000DBEC34 /* PubChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 092CF73C1B3C64D000DBEC34 /* PubChatTests.swift */; };
+		092CF74A1B3CABFB00DBEC34 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 092CF7491B3CABFB00DBEC34 /* TableViewCell.swift */; };
+		098567B71B3DC89D00E00B9F /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098567B61B3DC89D00E00B9F /* MenuTableViewController.swift */; };
+		098567B91B3DC94300E00B9F /* MenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098567B81B3DC94300E00B9F /* MenuTableViewCell.swift */; };
+		098567BB1B3DCCCF00E00B9F /* MenuTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098567BA1B3DCCCF00E00B9F /* MenuTransitionManager.swift */; };
+		50EABCA076FC4577445F0441 /* libPods-PubChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A6BC261C3A8D8AE48FD440F3 /* libPods-PubChat.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		02F4221E9A90A8E4D79B0E6B /* Pods-PubChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PubChat/Pods-PubChat.debug.xcconfig"; sourceTree = "<group>"; };
 		092CF7211B3C64D000DBEC34 /* PubChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PubChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		092CF7251B3C64D000DBEC34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		092CF7261B3C64D000DBEC34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -36,6 +42,13 @@
 		092CF7361B3C64D000DBEC34 /* PubChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PubChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		092CF73B1B3C64D000DBEC34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		092CF73C1B3C64D000DBEC34 /* PubChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PubChatTests.swift; sourceTree = "<group>"; };
+		092CF7461B3C661200DBEC34 /* PubChat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubChat-Bridging-Header.h"; sourceTree = "<group>"; };
+		092CF7491B3CABFB00DBEC34 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		098567B61B3DC89D00E00B9F /* MenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
+		098567B81B3DC94300E00B9F /* MenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTableViewCell.swift; sourceTree = "<group>"; };
+		098567BA1B3DCCCF00E00B9F /* MenuTransitionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTransitionManager.swift; sourceTree = "<group>"; };
+		7D61F5E629F0807D63D02C14 /* Pods-PubChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-PubChat/Pods-PubChat.release.xcconfig"; sourceTree = "<group>"; };
+		A6BC261C3A8D8AE48FD440F3 /* libPods-PubChat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PubChat.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50EABCA076FC4577445F0441 /* libPods-PubChat.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +76,8 @@
 				092CF7231B3C64D000DBEC34 /* PubChat */,
 				092CF7391B3C64D000DBEC34 /* PubChatTests */,
 				092CF7221B3C64D000DBEC34 /* Products */,
+				5D8BB033164414C0A6639230 /* Pods */,
+				446D6D56AE2254683A2DA1BA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -79,10 +95,15 @@
 			children = (
 				092CF7261B3C64D000DBEC34 /* AppDelegate.swift */,
 				092CF7281B3C64D000DBEC34 /* ViewController.swift */,
+				092CF7491B3CABFB00DBEC34 /* TableViewCell.swift */,
+				098567B61B3DC89D00E00B9F /* MenuTableViewController.swift */,
+				098567BA1B3DCCCF00E00B9F /* MenuTransitionManager.swift */,
+				098567B81B3DC94300E00B9F /* MenuTableViewCell.swift */,
 				092CF72A1B3C64D000DBEC34 /* Main.storyboard */,
 				092CF72D1B3C64D000DBEC34 /* Images.xcassets */,
 				092CF72F1B3C64D000DBEC34 /* LaunchScreen.xib */,
 				092CF7241B3C64D000DBEC34 /* Supporting Files */,
+				092CF7461B3C661200DBEC34 /* PubChat-Bridging-Header.h */,
 			);
 			path = PubChat;
 			sourceTree = "<group>";
@@ -112,6 +133,23 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		446D6D56AE2254683A2DA1BA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A6BC261C3A8D8AE48FD440F3 /* libPods-PubChat.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5D8BB033164414C0A6639230 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				02F4221E9A90A8E4D79B0E6B /* Pods-PubChat.debug.xcconfig */,
+				7D61F5E629F0807D63D02C14 /* Pods-PubChat.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -119,9 +157,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 092CF7401B3C64D000DBEC34 /* Build configuration list for PBXNativeTarget "PubChat" */;
 			buildPhases = (
+				DE63DFACB2ECC24191F1C10B /* Check Pods Manifest.lock */,
 				092CF71D1B3C64D000DBEC34 /* Sources */,
 				092CF71E1B3C64D000DBEC34 /* Frameworks */,
 				092CF71F1B3C64D000DBEC34 /* Resources */,
+				0461C6D12E9DA35A6C4F1D93 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -207,13 +247,50 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0461C6D12E9DA35A6C4F1D93 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PubChat/Pods-PubChat-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DE63DFACB2ECC24191F1C10B /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		092CF71D1B3C64D000DBEC34 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				098567B71B3DC89D00E00B9F /* MenuTableViewController.swift in Sources */,
+				098567BB1B3DCCCF00E00B9F /* MenuTransitionManager.swift in Sources */,
+				092CF74A1B3CABFB00DBEC34 /* TableViewCell.swift in Sources */,
 				092CF7291B3C64D000DBEC34 /* ViewController.swift in Sources */,
 				092CF7271B3C64D000DBEC34 /* AppDelegate.swift in Sources */,
+				098567B91B3DC94300E00B9F /* MenuTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,21 +415,28 @@
 		};
 		092CF7411B3C64D000DBEC34 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 02F4221E9A90A8E4D79B0E6B /* Pods-PubChat.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = PubChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "PubChat/PubChat-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		092CF7421B3C64D000DBEC34 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7D61F5E629F0807D63D02C14 /* Pods-PubChat.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = PubChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "PubChat/PubChat-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -409,6 +493,7 @@
 				092CF7421B3C64D000DBEC34 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		092CF7431B3C64D000DBEC34 /* Build configuration list for PBXNativeTarget "PubChatTests" */ = {
 			isa = XCConfigurationList;
@@ -417,6 +502,7 @@
 				092CF7451B3C64D000DBEC34 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
