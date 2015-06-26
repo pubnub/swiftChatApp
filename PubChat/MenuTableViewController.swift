@@ -11,10 +11,12 @@ import UIKit
 class MenuTableViewController: UITableViewController {
     var menuItems = ["Chats", "Change Name", "Settings"]
     var currentItem = "Home"
-    
+    let blogSegueIdentifier = "ShowBlogSegue"
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -33,6 +35,16 @@ class MenuTableViewController: UITableViewController {
         // Return the number of rows in the section.
         return menuItems.count
     }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        println(menuItems[indexPath.row] as String)
+        
+        if(indexPath.row == 0){
+            //performSegueWithIdentifier("ShowBlogSegue", sender: nil)
+            performSegueWithIdentifier("ChatPushedSegue", sender: self)
+
+        }
+    }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! MenuTableViewCell
@@ -40,16 +52,40 @@ class MenuTableViewController: UITableViewController {
         // Configure the cell...
         cell.titleLabel.text = menuItems[indexPath.row]
         cell.titleLabel.textColor = (menuItems[indexPath.row] == currentItem) ? UIColor.whiteColor() : UIColor.grayColor()
-
         return cell
     }
     
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let menuTableViewController = segue.sourceViewController as! MenuTableViewController
+        
         let selectedRow = menuTableViewController.tableView.indexPathForSelectedRow()?.row
-        if((selectedRow) != nil){
-            currentItem = menuItems[selectedRow!]
-        }
+        
+//        if(selectedRow == 0){
+//            println("Chats")
+//            if (segue.identifier == blogSegueIdentifier){
+//                let destination = segue.destinationViewController as? ChatsTableViewController
+//                println("Destination is ")
+//                println(destination)
+//                if ((destination) != nil){
+//                    let blogIndex = tableView.indexPathForSelectedRow()?.row
+//                    println("blogIndex is")
+//                    println(tableView.indexPathForSelectedRow()?.row)
+//                    if ((blogIndex) != nil){
+//                        destination!.blogName = menuItems[blogIndex!]
+//                    }
+//                }
+//            }
+//        }
+      
     }
+    
+    
+    
+    @IBAction func exitTapped(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: {});//This is intended to dismiss the Info sceen.
+        println("pressed")
+    }
+
     
 }
