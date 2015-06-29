@@ -15,29 +15,28 @@ class chatMessage : NSObject{
     var name: String
     var text: String
     var time: String
+    var image: String
+    var type: String
     
-    init(name: String, text: String, time: String) {
+    init(name: String, text: String, time: String, image: String, type: String) {
         self.name = name
         self.text = text
         self.time = time
+        self.image = image
+        self.type = type
     }
-    
-    var getName: String{
-        return self.name
-    }
-    var getText: String{
-        return self.text
-    }
-    var getTime: String{
-        return self.time
-    }
+
 }
 
 func chatMessageToDictionary(chatmessage : chatMessage) -> [String : NSString]{
     return [
         "name": NSString(string: chatmessage.name),
         "text": NSString(string: chatmessage.text),
-        "time": NSString(string: chatmessage.time)
+        "time": NSString(string: chatmessage.time),
+        "image": NSString(string: chatmessage.image),
+        "type": NSString(string: chatmessage.type)
+
+
     ]
 }
 
@@ -48,13 +47,18 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     @IBOutlet weak var MessageTextField: UITextField!
     
-    
+    @IBOutlet var occupancyButton: UIButton!
 
-    var userName = "Jonny Doe"
+    var userName = ""
     
     var chatMessageArray:[chatMessage] = []
     
     var menuTransitionManager = MenuTransitionManager()
+    
+    var introModalDidDisplay = false
+    
+    var randomNumber = Int(arc4random_uniform(9))
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,10 +74,46 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         
         self.MessageTextField.delegate = self
         MessageTableView.dataSource = self
+        
+        self.MessageTableView.separatorStyle = UITableViewCellSeparatorStyle.None
+
         updateTableview()
+        
+        showIntroModal()
+
 
     }
     
+    func showIntroModal() {
+        if (!introModalDidDisplay) {
+            
+            var loginAlert:UIAlertController = UIAlertController(title: "Enter", message: "Please enter your Name", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            loginAlert.addTextFieldWithConfigurationHandler({
+                textfield in
+                textfield.placeholder = "What is your name?"
+            })
+            
+            loginAlert.addAction(UIAlertAction(title: "Go", style: UIAlertActionStyle.Default, handler: {alertAction in
+                    let textFields:NSArray = loginAlert.textFields! as NSArray
+                    let usernameTextField:UITextField = textFields.objectAtIndex(0) as! UITextField
+                    self.userName = usernameTextField.text
+                    if(self.userName == ""){
+                        self.showIntroModal()
+                    }
+                    else{
+                        self.introModalDidDisplay = true
+                    }
+                }))
+
+            
+            self.presentViewController(loginAlert, animated: true, completion: nil)
+        
+        }
+        
+    }
+
+
     deinit {
         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
         
@@ -101,7 +141,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         if(message == "") {return}
         else{
             
-            var pubChat = chatMessage(name: userName, text: MessageTextField.text, time: "12:12am")
+            
+            var pubChat = chatMessage(name: userName, text: MessageTextField.text, time: getTime(), image: String(randomNumber), type: "Chat")
 
             var newDict = chatMessageToDictionary(pubChat)
 
@@ -113,6 +154,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         
     }
     
+    func getTime() -> String{
+        let currentDate = NSDate()  //5 -  get the current date
+        var dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "hh:mm a" //format style. Browse online to get a format that fits your needs.
+        var dateString = dateFormatter.stringFromDate(currentDate)
+        
+        return dateString
+    }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.chatMessageArray.count;
@@ -121,11 +170,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell: TableViewCell = self.MessageTableView.dequeueReusableCellWithIdentifier("Cell") as! TableViewCell
+        if(chatMessageArray[indexPath.row].type as String == "Chat"){
+            cell.messageTextField.text = chatMessageArray[indexPath.row].text as String
+            cell.nameLabel.text = chatMessageArray[indexPath.row].name as String
+            cell.timeLabel.text = chatMessageArray[indexPath.row].time as String
+            
+            let imageName = "emoji\(chatMessageArray[indexPath.row].image as String).png"
+            let newImage = UIImage(named: imageName)
+            cell.userImage.image = newImage
+        }
         
-        cell.messageTextField.text = chatMessageArray[indexPath.row].text as String
-        cell.nameLabel.text = chatMessageArray[indexPath.row].name as String
-        cell.timeLabel.text = "12:12am"
-        //cell.timeLabel.text = chatMessageArray[indexPath.row].time as String
         return cell
     }
     
@@ -145,12 +199,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         
     }
     
-    @IBAction func EditButtonTapped(sender: AnyObject) {
-        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
-        var myUUID = appDel.client?.uuid() as! String?
-        appDel.client?.publish(myUUID, toChannel: "demo", compressed: true, withCompletion: nil)
-    }
+
     
+    @IBAction func occupancyButtonTapped(sender: AnyObject) {
+        
+    }
     
     @IBAction func unwindToHome(segue: UIStoryboardSegue) {
         let sourceController = segue.sourceViewController as! MenuTableViewController
@@ -175,23 +228,33 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         var stringName = stringData["name"] as! String
         var stringText = stringData["text"] as! String
         var stringTime = stringData["time"] as! String
+        var stringImage = stringData["image"] as! String
+        var stringType = stringData["type"] as! String
 
-        var newMessage = chatMessage(name: stringName, text: stringText, time: stringTime)
+
+
+        var newMessage = chatMessage(name: stringName, text: stringText, time: stringTime, image: stringImage, type: stringType)
         
         chatMessageArray.append(newMessage)
-        if(MessageTableView != nil){
-            println("Not nil")
-            MessageTableView.reloadData()
-        }
-        else{
-            println("Pretty nil")
-        }
+        MessageTableView.reloadData()
+
     }
     
     func client(client: PubNub!, didReceivePresenceEvent event: PNPresenceEventResult!) {
         println("******didReceivePresenceEvent*****")
         println(event.data)
-    
+        var occ = event.data.presence.occupancy.stringValue
+        occupancyButton.setTitle(occ, forState: .Normal)
+        
+//        var pubChat = chatMessage(name: "", text: "Someone just \(event.data.presenceEvent)", time: getTime())
+//        
+//        var newDict = chatMessageToDictionary(pubChat)
+//        
+//        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+//        appDel.client?.publish(newDict, toChannel: "demo", compressed: true, withCompletion: nil)
+        
+        
+      
     }
     func client(client: PubNub!, didReceiveStatus status: PNSubscribeStatus!) {
         println("status")
