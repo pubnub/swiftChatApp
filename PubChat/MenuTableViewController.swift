@@ -40,7 +40,6 @@ class MenuTableViewController: UITableViewController {
         println(menuItems[indexPath.row] as String)
         
         if(indexPath.row == 0){
-            //performSegueWithIdentifier("ShowBlogSegue", sender: nil)
             performSegueWithIdentifier("ChatPushedSegue", sender: self)
 
         }

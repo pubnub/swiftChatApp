@@ -22,8 +22,6 @@ import UIKit
             subscribeKey: "sub-c-34be47b2-f776-11e4-b559-0619f8945a4f")
         
         client = PubNub.clientWithConfiguration(config)
-
-        client?.addListener(self)
         
         return true
     }
@@ -49,29 +47,6 @@ import UIKit
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
-   // var myCustomViewController: ViewController = ViewController(nibName: nil, bundle: nil)
-    var myCustomViewController = ViewController()
-
-
-    func client(client: PubNub!, didReceiveMessage message: PNMessageResult!, withStatus status: PNErrorStatus!) {
-        println("******didReceiveMessage*****")
-        myCustomViewController.messages.append(message.data.message as! String)
-        println(myCustomViewController.messages)
-        if(myCustomViewController.MessageTableView != nil){
-            println("Not nil")
-            myCustomViewController.MessageTableView.reloadData()
-        }
-        else{
-            println("Pretty nil")
-        }
-    }
-    
-    func client(client: PubNub!, didReceivePresenceEvent event: PNPresenceEventResult!) {
-        println("******didReceivePresenceEvent*****")
-        println(event.data)
-        
-        
-    }
 
 
 }

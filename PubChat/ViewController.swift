@@ -7,35 +7,77 @@
 //
 
 import UIKit
+import Foundation
 
-class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MenuTransitionManagerDelegate{
+
+
+class chatMessage : NSObject{
+    var name: String
+    var text: String
+    var time: String
     
+    init(name: String, text: String, time: String) {
+        self.name = name
+        self.text = text
+        self.time = time
+    }
+    
+    var getName: String{
+        return self.name
+    }
+    var getText: String{
+        return self.text
+    }
+    var getTime: String{
+        return self.time
+    }
+}
 
-    @IBOutlet var MessageTableView: UITableView!
+func chatMessageToDictionary(chatmessage : chatMessage) -> [String : NSString]{
+    return [
+        "name": NSString(string: chatmessage.name),
+        "text": NSString(string: chatmessage.text),
+        "time": NSString(string: chatmessage.time)
+    ]
+}
+
+
+class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MenuTransitionManagerDelegate, PNObjectEventListener {
+    
+    @IBOutlet weak var MessageTableView: UITableView!
     
     @IBOutlet weak var MessageTextField: UITextField!
-   
-    var messages: [String] = ["test","test2","test3"]
+    
+    
+
+    var userName = "Jonny Doe"
+    
+    var chatMessageArray:[chatMessage] = []
     
     var menuTransitionManager = MenuTransitionManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Home"
-
+                
         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+        
+        appDel.client?.addListener(self)
         
         appDel.client?.subscribeToChannels(["demo"], withPresence: false)
         
-        //println(appDel.client?.uuid())
-        
         appDel.client?.subscribeToPresenceChannels(["demo"])
         
-
         self.MessageTextField.delegate = self
         MessageTableView.dataSource = self
         updateTableview()
 
+    }
+    
+    deinit {
+        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+        
+        appDel.client?.removeListener(self)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -58,7 +100,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         var message = MessageTextField.text
         if(message == "") {return}
         else{
-            appDel.client?.publish(message, toChannel: "demo", compressed: true, withCompletion: nil)
+            
+            var pubChat = chatMessage(name: userName, text: MessageTextField.text, time: "12:12am")
+
+            var newDict = chatMessageToDictionary(pubChat)
+
+            appDel.client?.publish(newDict, toChannel: "demo", compressed: true, withCompletion: nil)
+            
             MessageTextField.text = nil
             updateTableview()
         }
@@ -67,16 +115,17 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.messages.count;
+        return self.chatMessageArray.count;
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell: TableViewCell = self.MessageTableView.dequeueReusableCellWithIdentifier("Cell") as! TableViewCell
-        cell.messageTextField.text = messages[indexPath.row] as String
-        //println(messages[indexPath.row])
-        cell.nameLabel.text = "John Doe"
+        
+        cell.messageTextField.text = chatMessageArray[indexPath.row].text as String
+        cell.nameLabel.text = chatMessageArray[indexPath.row].name as String
         cell.timeLabel.text = "12:12am"
+        //cell.timeLabel.text = chatMessageArray[indexPath.row].time as String
         return cell
     }
     
@@ -88,7 +137,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         self.MessageTableView.reloadData()
         
         if self.MessageTableView.contentSize.height > self.MessageTableView.frame.size.height {
-            MessageTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messages.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
+            MessageTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: chatMessageArray.count - 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
         }
     }
     
@@ -117,6 +166,35 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         menuTableViewController.currentItem = self.title!
         menuTableViewController.transitioningDelegate = self.menuTransitionManager
         self.menuTransitionManager.delegate = self
+    }
+    
+    func client(client: PubNub!, didReceiveMessage message: PNMessageResult!, withStatus status: PNErrorStatus!) {
+        println("******didReceiveMessage*****")
+        
+        var stringData = message.data.message as! NSDictionary
+        var stringName = stringData["name"] as! String
+        var stringText = stringData["text"] as! String
+        var stringTime = stringData["time"] as! String
+
+        var newMessage = chatMessage(name: stringName, text: stringText, time: stringTime)
+        
+        chatMessageArray.append(newMessage)
+        if(MessageTableView != nil){
+            println("Not nil")
+            MessageTableView.reloadData()
+        }
+        else{
+            println("Pretty nil")
+        }
+    }
+    
+    func client(client: PubNub!, didReceivePresenceEvent event: PNPresenceEventResult!) {
+        println("******didReceivePresenceEvent*****")
+        println(event.data)
+    
+    }
+    func client(client: PubNub!, didReceiveStatus status: PNSubscribeStatus!) {
+        println("status")
     }
     
 }

@@ -158,7 +158,9 @@
                             <outlet property="delegate" destination="zGl-Q6-o6Z" id="0gK-0S-Ngg"/>
                         </connections>
                     </tableView>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="Jys-XU-Nlm"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <segue destination="fLg-0n-fkQ" kind="show" identifier="ChatPushedSegue" id="KGg-oS-d1I"/>
