@@ -35,11 +35,13 @@ func chatMessageToDictionary(chatmessage : chatMessage) -> [String : NSString]{
         "time": NSString(string: chatmessage.time),
         "image": NSString(string: chatmessage.image),
         "type": NSString(string: chatmessage.type)
-
-
     ]
 }
 
+var chatMessageArray:[chatMessage] = []
+
+var userName = ""
+var chan = "Demo"
 
 class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MenuTransitionManagerDelegate, PNObjectEventListener {
     
@@ -49,9 +51,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     @IBOutlet var occupancyButton: UIButton!
 
-    var userName = ""
     
-    var chatMessageArray:[chatMessage] = []
     
     var menuTransitionManager = MenuTransitionManager()
     
@@ -62,15 +62,15 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Home"
-                
+        
+        
         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
         
         appDel.client?.addListener(self)
         
-        appDel.client?.subscribeToChannels(["demo"], withPresence: false)
+        appDel.client?.subscribeToChannels([chan], withPresence: false)
         
-        appDel.client?.subscribeToPresenceChannels(["demo"])
+        appDel.client?.subscribeToPresenceChannels([chan])
         
         self.MessageTextField.delegate = self
         MessageTableView.dataSource = self
@@ -87,7 +87,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     func showIntroModal() {
         if (!introModalDidDisplay) {
             
-            var loginAlert:UIAlertController = UIAlertController(title: "Enter", message: "Please enter your Name", preferredStyle: UIAlertControllerStyle.Alert)
+            var loginAlert:UIAlertController = UIAlertController(title: "New User", message: "Please enter your name", preferredStyle: UIAlertControllerStyle.Alert)
             
             loginAlert.addTextFieldWithConfigurationHandler({
                 textfield in
@@ -97,8 +97,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             loginAlert.addAction(UIAlertAction(title: "Go", style: UIAlertActionStyle.Default, handler: {alertAction in
                     let textFields:NSArray = loginAlert.textFields! as NSArray
                     let usernameTextField:UITextField = textFields.objectAtIndex(0) as! UITextField
-                    self.userName = usernameTextField.text
-                    if(self.userName == ""){
+                    userName = usernameTextField.text
+                    if(userName == ""){
                         self.showIntroModal()
                     }
                     else{
@@ -121,6 +121,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     }
     
     override func viewWillAppear(animated: Bool) {
+        self.title = chan
         updateTableview()
     }
     
@@ -146,7 +147,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
 
             var newDict = chatMessageToDictionary(pubChat)
 
-            appDel.client?.publish(newDict, toChannel: "demo", compressed: true, withCompletion: nil)
+            appDel.client?.publish(newDict, toChannel: chan, compressed: true, withCompletion: nil)
             
             MessageTextField.text = nil
             updateTableview()
@@ -164,7 +165,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.chatMessageArray.count;
+        return chatMessageArray.count;
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -178,6 +179,15 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             let imageName = "emoji\(chatMessageArray[indexPath.row].image as String).png"
             let newImage = UIImage(named: imageName)
             cell.userImage.image = newImage
+        }
+        if(chatMessageArray[indexPath.row].type as String == "Presence"){
+            cell.messageTextField.text = ""
+            cell.nameLabel.text = chatMessageArray[indexPath.row].text as String
+            cell.timeLabel.text = chatMessageArray[indexPath.row].time as String
+            
+            //let imageName = "emoji\(chatMessageArray[indexPath.row].image as String).png"
+            //let newImage = UIImage(named: imageName)
+            //cell.userImage.image = newImage
         }
         
         return cell
@@ -246,12 +256,12 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         var occ = event.data.presence.occupancy.stringValue
         occupancyButton.setTitle(occ, forState: .Normal)
         
-//        var pubChat = chatMessage(name: "", text: "Someone just \(event.data.presenceEvent)", time: getTime())
-//        
-//        var newDict = chatMessageToDictionary(pubChat)
-//        
-//        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
-//        appDel.client?.publish(newDict, toChannel: "demo", compressed: true, withCompletion: nil)
+        var pubChat = chatMessage(name: "", text: "There was a \(event.data.presenceEvent)", time: getTime(), image: "",type: "Presence")
+        
+        var newDict = chatMessageToDictionary(pubChat)
+        
+        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+        appDel.client?.publish(newDict, toChannel: chan, compressed: true, withCompletion: nil)
         
         
       

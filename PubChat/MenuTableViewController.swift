@@ -9,8 +9,7 @@
 import UIKit
 
 class MenuTableViewController: UITableViewController {
-    var menuItems = ["Chats", "Change Name", "Settings"]
-    var currentItem = "Home"
+    var menuItems = ["Change Channel", "Change Name", "Settings"]
     let blogSegueIdentifier = "ShowBlogSegue"
 
     override func viewDidLoad() {
@@ -40,8 +39,12 @@ class MenuTableViewController: UITableViewController {
         println(menuItems[indexPath.row] as String)
         
         if(indexPath.row == 0){
-            performSegueWithIdentifier("ChatPushedSegue", sender: self)
-
+            //performSegueWithIdentifier("ChatPushedSegue", sender: self)
+            showChannelModal()
+        }
+        
+        if(indexPath.row == 1){
+            showNameModal()
         }
     }
 
@@ -50,7 +53,6 @@ class MenuTableViewController: UITableViewController {
 
         // Configure the cell...
         cell.titleLabel.text = menuItems[indexPath.row]
-        cell.titleLabel.textColor = (menuItems[indexPath.row] == currentItem) ? UIColor.whiteColor() : UIColor.grayColor()
         return cell
     }
     
@@ -59,26 +61,63 @@ class MenuTableViewController: UITableViewController {
         let menuTableViewController = segue.sourceViewController as! MenuTableViewController
         
         let selectedRow = menuTableViewController.tableView.indexPathForSelectedRow()?.row
-        
-//        if(selectedRow == 0){
-//            println("Chats")
-//            if (segue.identifier == blogSegueIdentifier){
-//                let destination = segue.destinationViewController as? ChatsTableViewController
-//                println("Destination is ")
-//                println(destination)
-//                if ((destination) != nil){
-//                    let blogIndex = tableView.indexPathForSelectedRow()?.row
-//                    println("blogIndex is")
-//                    println(tableView.indexPathForSelectedRow()?.row)
-//                    if ((blogIndex) != nil){
-//                        destination!.blogName = menuItems[blogIndex!]
-//                    }
-//                }
-//            }
-//        }
       
     }
     
+    func showNameModal() {
+        
+            var loginAlert:UIAlertController = UIAlertController(title: "Change Name", message: "Please enter your new name", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            loginAlert.addTextFieldWithConfigurationHandler({
+                textfield in
+                textfield.placeholder = "What is your name?"
+            })
+            
+            loginAlert.addAction(UIAlertAction(title: "Go", style: UIAlertActionStyle.Default, handler: {alertAction in
+                let textFields:NSArray = loginAlert.textFields! as NSArray
+                let usernameTextField:UITextField = textFields.objectAtIndex(0) as! UITextField
+                userName = usernameTextField.text
+                if(userName == ""){
+                    self.showNameModal()
+                }
+                else{
+                    
+                }
+            }))
+        
+            self.presentViewController(loginAlert, animated: true, completion: nil)
+    }
+    
+    
+    
+    func showChannelModal() {
+        
+        var loginAlert:UIAlertController = UIAlertController(title: "Change Channel", message: "Please enter Channel name", preferredStyle: UIAlertControllerStyle.Alert)
+        
+        loginAlert.addTextFieldWithConfigurationHandler({
+            textfield in
+            textfield.placeholder = "Subscribe me to channel: _____"
+        })
+        
+        loginAlert.addAction(UIAlertAction(title: "Go", style: UIAlertActionStyle.Default, handler: {alertAction in
+            let textFields:NSArray = loginAlert.textFields! as NSArray
+            let usernameTextField:UITextField = textFields.objectAtIndex(0) as! UITextField
+            chan = usernameTextField.text
+            if(chan == ""){
+                //self.showChannelModal()
+            }
+            else{
+                let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+                appDel.client?.unsubscribeFromChannels([],withPresence: true)
+                appDel.client?.unsubscribeFromPresenceChannels([])
+                chatMessageArray = []
+                appDel.client?.subscribeToChannels([chan], withPresence: false)
+                appDel.client?.subscribeToPresenceChannels([chan])
+            }
+        }))
+        
+        self.presentViewController(loginAlert, animated: true, completion: nil)
+    }
     
     
     @IBAction func exitTapped(sender: AnyObject) {
