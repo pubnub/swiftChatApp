@@ -48,6 +48,12 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     @IBOutlet weak var MessageTableView: UITableView!
     
+    
+    
+    
+    var kPreferredTextFieldToKeyboardOffset: CGFloat = 60.0
+    var keyboardFrame: CGRect = CGRect.nullRect
+    var keyboardIsShowing: Bool = false
     @IBOutlet weak var MessageTextField: UITextField!
     
     @IBOutlet var occupancyButton: UIButton!
@@ -80,8 +86,107 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         updateTableview()
         
         showIntroModal()
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+        
+        for subview in self.view.subviews
+        {
+            if (subview.isKindOfClass(UITextField))
+            {
+                var textField = subview as! UITextField
+                textField.addTarget(self, action: "textFieldDidReturn:", forControlEvents: UIControlEvents.EditingDidEndOnExit)
+                
+                textField.addTarget(self, action: "textFieldDidBeginEditing:", forControlEvents: UIControlEvents.EditingDidBegin)
+                
+            }
+        }
+        
 
 
+    }
+    
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    
+    func keyboardWillShow(notification: NSNotification)
+    {
+        self.keyboardIsShowing = true
+        
+        if let info = notification.userInfo {
+            self.keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+            self.arrangeViewOffsetFromKeyboard()
+        }
+        
+    }
+    
+    func keyboardWillHide(notification: NSNotification)
+    {
+        self.keyboardIsShowing = false
+        
+        self.returnViewToInitialFrame()
+    }
+    
+    func arrangeViewOffsetFromKeyboard()
+    {
+        var theApp: UIApplication = UIApplication.sharedApplication()
+        var windowView: UIView? = theApp.delegate!.window!
+        
+        var textFieldLowerPoint: CGPoint = CGPointMake(self.MessageTextField!.frame.origin.x, self.MessageTextField!.frame.origin.y + self.MessageTextField!.frame.size.height)
+        
+        var convertedTextFieldLowerPoint: CGPoint = self.view.convertPoint(textFieldLowerPoint, toView: windowView)
+        
+        var targetTextFieldLowerPoint: CGPoint = CGPointMake(self.MessageTextField!.frame.origin.x, self.keyboardFrame.origin.y - kPreferredTextFieldToKeyboardOffset)
+        
+        var targetPointOffset: CGFloat = targetTextFieldLowerPoint.y - convertedTextFieldLowerPoint.y
+        var adjustedViewFrameCenter: CGPoint = CGPointMake(self.view.center.x, self.view.center.y + targetPointOffset)
+        
+        UIView.animateWithDuration(0.2, animations:  {
+            self.view.center = adjustedViewFrameCenter
+        })
+    }
+    
+    func returnViewToInitialFrame()
+    {
+        var initialViewRect: CGRect = CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height)
+        
+        if (!CGRectEqualToRect(initialViewRect, self.view.frame))
+        {
+            UIView.animateWithDuration(0.2, animations: {
+                self.view.frame = initialViewRect
+            });
+        }
+    }
+    
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent)
+    {
+        if (self.MessageTextField != nil)
+        {
+            self.MessageTextField?.resignFirstResponder()
+            self.MessageTextField = nil
+        }
+    }
+    
+    @IBAction func textFieldDidReturn(textField: UITextField!)
+    {
+        textField.resignFirstResponder()
+        self.MessageTextField = nil
+    }
+    
+    func textFieldDidBeginEditing(textField: UITextField)
+    {
+        self.MessageTextField = textField
+        
+        if(self.keyboardIsShowing)
+        {
+            self.arrangeViewOffsetFromKeyboard()
+        }
     }
     
     func showIntroModal() {
