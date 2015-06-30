@@ -48,10 +48,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     @IBOutlet weak var MessageTableView: UITableView!
     
-    
-    
-    
-    var kPreferredTextFieldToKeyboardOffset: CGFloat = 60.0
+    var kPreferredTextFieldToKeyboardOffset: CGFloat = 70.0
     var keyboardFrame: CGRect = CGRect.nullRect
     var keyboardIsShowing: Bool = false
     @IBOutlet weak var MessageTextField: UITextField!
@@ -86,25 +83,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         updateTableview()
         
         showIntroModal()
-        
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
-        
-        for subview in self.view.subviews
-        {
-            if (subview.isKindOfClass(UITextField))
-            {
-                var textField = subview as! UITextField
-                textField.addTarget(self, action: "textFieldDidReturn:", forControlEvents: UIControlEvents.EditingDidEndOnExit)
-                
-                textField.addTarget(self, action: "textFieldDidBeginEditing:", forControlEvents: UIControlEvents.EditingDidBegin)
-                
-            }
-        }
-        
-
 
     }
     
@@ -236,6 +214,22 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             
         })
         
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+        
+        for subview in self.view.subviews
+        {
+            if (subview.isKindOfClass(UITextField))
+            {
+                var textField = subview as! UITextField
+                textField.addTarget(self, action: "textFieldDidReturn:", forControlEvents: UIControlEvents.EditingDidEndOnExit)
+                
+                textField.addTarget(self, action: "textFieldDidBeginEditing:", forControlEvents: UIControlEvents.EditingDidBegin)
+                
+            }
+        }
        
     }
     
@@ -316,6 +310,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         
         let cell: TableViewCell = self.MessageTableView.dequeueReusableCellWithIdentifier("Cell") as! TableViewCell
         if(chatMessageArray[indexPath.row].type as String == "Chat"){
+            
+            if(chatMessageArray[indexPath.row].name == userName){
+                cell.messageTextField.textColor = UIColor.blueColor()
+                cell.nameLabel.textColor = UIColor.blueColor()
+                cell.timeLabel.textColor = UIColor.blueColor()
+            }
+            
             cell.messageTextField.text = chatMessageArray[indexPath.row].text as String
             cell.nameLabel.text = chatMessageArray[indexPath.row].name as String
             cell.timeLabel.text = chatMessageArray[indexPath.row].time as String
@@ -323,6 +324,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             let imageName = "emoji\(chatMessageArray[indexPath.row].image as String).png"
             let newImage = UIImage(named: imageName)
             cell.userImage.image = newImage
+            
+            
         }
         if(chatMessageArray[indexPath.row].type as String == "Presence"){
             cell.messageTextField.text = ""
@@ -390,6 +393,15 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         
         chatMessageArray.append(newMessage)
         MessageTableView.reloadData()
+        
+        let numberOfSections = MessageTableView.numberOfSections()
+        let numberOfRows = MessageTableView.numberOfRowsInSection(numberOfSections-1)
+        
+        if numberOfRows > 0 {
+            println(numberOfSections)
+            let indexPath = NSIndexPath(forRow: numberOfRows-1, inSection: (numberOfSections-1))
+            MessageTableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
+        }
 
     }
     

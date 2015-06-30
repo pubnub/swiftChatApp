@@ -16,7 +16,6 @@
 		098567B71B3DC89D00E00B9F /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098567B61B3DC89D00E00B9F /* MenuTableViewController.swift */; };
 		098567B91B3DC94300E00B9F /* MenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098567B81B3DC94300E00B9F /* MenuTableViewCell.swift */; };
 		098567BB1B3DCCCF00E00B9F /* MenuTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098567BA1B3DCCCF00E00B9F /* MenuTransitionManager.swift */; };
-		098567BF1B3DE74700E00B9F /* ChatsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098567BE1B3DE74700E00B9F /* ChatsTableViewController.swift */; };
 		09D89EBE1B3E0B6B006D7B4A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09D89EBD1B3E0B6B006D7B4A /* Main.storyboard */; };
 		50EABCA076FC4577445F0441 /* libPods-PubChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A6BC261C3A8D8AE48FD440F3 /* libPods-PubChat.a */; };
 /* End PBXBuildFile section */
@@ -47,7 +46,6 @@
 		098567B61B3DC89D00E00B9F /* MenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
 		098567B81B3DC94300E00B9F /* MenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTableViewCell.swift; sourceTree = "<group>"; };
 		098567BA1B3DCCCF00E00B9F /* MenuTransitionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTransitionManager.swift; sourceTree = "<group>"; };
-		098567BE1B3DE74700E00B9F /* ChatsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatsTableViewController.swift; sourceTree = "<group>"; };
 		09D89EBD1B3E0B6B006D7B4A /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		7D61F5E629F0807D63D02C14 /* Pods-PubChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-PubChat/Pods-PubChat.release.xcconfig"; sourceTree = "<group>"; };
 		A6BC261C3A8D8AE48FD440F3 /* libPods-PubChat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PubChat.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,17 +94,16 @@
 			isa = PBXGroup;
 			children = (
 				092CF7261B3C64D000DBEC34 /* AppDelegate.swift */,
-				098567BE1B3DE74700E00B9F /* ChatsTableViewController.swift */,
 				092CF7281B3C64D000DBEC34 /* ViewController.swift */,
 				092CF7491B3CABFB00DBEC34 /* TableViewCell.swift */,
 				098567B61B3DC89D00E00B9F /* MenuTableViewController.swift */,
 				098567BA1B3DCCCF00E00B9F /* MenuTransitionManager.swift */,
-				09D89EBD1B3E0B6B006D7B4A /* Main.storyboard */,
 				098567B81B3DC94300E00B9F /* MenuTableViewCell.swift */,
+				09D89EBD1B3E0B6B006D7B4A /* Main.storyboard */,
+				092CF7461B3C661200DBEC34 /* PubChat-Bridging-Header.h */,
 				092CF72D1B3C64D000DBEC34 /* Images.xcassets */,
 				092CF72F1B3C64D000DBEC34 /* LaunchScreen.xib */,
 				092CF7241B3C64D000DBEC34 /* Supporting Files */,
-				092CF7461B3C661200DBEC34 /* PubChat-Bridging-Header.h */,
 			);
 			path = PubChat;
 			sourceTree = "<group>";
@@ -294,7 +291,6 @@
 				092CF7291B3C64D000DBEC34 /* ViewController.swift in Sources */,
 				092CF7271B3C64D000DBEC34 /* AppDelegate.swift in Sources */,
 				098567B91B3DC94300E00B9F /* MenuTableViewCell.swift in Sources */,
-				098567BF1B3DE74700E00B9F /* ChatsTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
