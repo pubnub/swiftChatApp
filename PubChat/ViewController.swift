@@ -316,6 +316,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                 cell.nameLabel.textColor = UIColor.blueColor()
                 cell.timeLabel.textColor = UIColor.blueColor()
             }
+            else{
+                cell.messageTextField.textColor = UIColor.blackColor()
+                cell.nameLabel.textColor = UIColor.blackColor()
+                cell.timeLabel.textColor = UIColor.blackColor()
+            }
             
             cell.messageTextField.text = chatMessageArray[indexPath.row].text as String
             cell.nameLabel.text = chatMessageArray[indexPath.row].name as String
@@ -323,19 +328,20 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             
             let imageName = "emoji\(chatMessageArray[indexPath.row].image as String).png"
             let newImage = UIImage(named: imageName)
+            cell.userImage?.hidden = false
             cell.userImage.image = newImage
-            
+            println("creating a chat message")
             
         }
-        if(chatMessageArray[indexPath.row].type as String == "Presence"){
+        else if(chatMessageArray[indexPath.row].type as String == "Presence"){
             cell.messageTextField.text = ""
             cell.nameLabel.text = chatMessageArray[indexPath.row].text as String
             cell.timeLabel.text = chatMessageArray[indexPath.row].time as String
-            
-            //let imageName = "emoji\(chatMessageArray[indexPath.row].image as String).png"
-            //let newImage = UIImage(named: imageName)
-            //cell.userImage.image = newImage
+            cell.userImage?.hidden = true
+            println("creating a presence message")
+
         }
+
         
         return cell
     }
@@ -352,11 +358,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         }
     }
     
-    @IBAction func ChannelButtonTapped(sender: AnyObject) {
-        
-    }
-    
-
     
     @IBAction func occupancyButtonTapped(sender: AnyObject) {
         
@@ -392,16 +393,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         var newMessage = chatMessage(name: stringName, text: stringText, time: stringTime, image: stringImage, type: stringType)
         
         chatMessageArray.append(newMessage)
-        MessageTableView.reloadData()
-        
-        let numberOfSections = MessageTableView.numberOfSections()
-        let numberOfRows = MessageTableView.numberOfRowsInSection(numberOfSections-1)
-        
-        if numberOfRows > 0 {
-            println(numberOfSections)
-            let indexPath = NSIndexPath(forRow: numberOfRows-1, inSection: (numberOfSections-1))
-            MessageTableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
-        }
+        updateChat()
 
     }
     
@@ -413,14 +405,27 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         
         var pubChat = chatMessage(name: "", text: "There was a \(event.data.presenceEvent)", time: getTime(), image: " ",type: "Presence")
         
-        var newDict = chatMessageToDictionary(pubChat)
-        
-        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
-        appDel.client?.publish(newDict, toChannel: chan, compressed: true, withCompletion: nil)
-        
-        
+        chatMessageArray.append(pubChat)
+        updateChat()
+
       
     }
+    
+    func updateChat(){
+        MessageTableView.reloadData()
+        
+        let numberOfSections = MessageTableView.numberOfSections()
+        let numberOfRows = MessageTableView.numberOfRowsInSection(numberOfSections-1)
+        
+        if numberOfRows > 0 {
+            println(numberOfSections)
+            let indexPath = NSIndexPath(forRow: numberOfRows-1, inSection: (numberOfSections-1))
+            MessageTableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
+        }
+    
+    }
+    
+    
     func client(client: PubNub!, didReceiveStatus status: PNSubscribeStatus!) {
         println("status")
     }

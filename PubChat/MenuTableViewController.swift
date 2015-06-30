@@ -9,7 +9,7 @@
 import UIKit
 
 class MenuTableViewController: UITableViewController {
-    var menuItems = ["Change Channel", "Change Name", "Settings"]
+    var menuItems = ["Change Channel", "Change Name"]
     let blogSegueIdentifier = "ShowBlogSegue"
 
     override func viewDidLoad() {
