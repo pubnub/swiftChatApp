@@ -25,6 +25,7 @@ class chatMessage : NSObject{
         self.image = image
         self.type = type
     }
+    
 
 }
 
@@ -41,7 +42,7 @@ func chatMessageToDictionary(chatmessage : chatMessage) -> [String : NSString]{
 var chatMessageArray:[chatMessage] = []
 
 var userName = ""
-var chan = "Demo"
+var chan = "Chat"
 
 class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MenuTransitionManagerDelegate, PNObjectEventListener {
     
@@ -51,8 +52,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     @IBOutlet var occupancyButton: UIButton!
 
-    
-    
+        
     var menuTransitionManager = MenuTransitionManager()
     
     var introModalDidDisplay = false
@@ -63,7 +63,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
         
         appDel.client?.addListener(self)
@@ -71,6 +70,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         appDel.client?.subscribeToChannels([chan], withPresence: false)
         
         appDel.client?.subscribeToPresenceChannels([chan])
+        
         
         self.MessageTextField.delegate = self
         MessageTableView.dataSource = self
@@ -122,8 +122,47 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     override func viewWillAppear(animated: Bool) {
         self.title = chan
-        updateTableview()
+        //chatMessageArray = []
+        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+        appDel.client?.historyForChannel(chan, start: nil, end: nil, includeTimeToken: true, withCompletion: { (result, status) -> Void in
+            
+            chatMessageArray = self.parseJson(result.data.messages)
+            self.updateTableview()
+            
+        })
+        
+       
     }
+    
+    
+    func parseJson(anyObj:AnyObject) -> Array<chatMessage>{
+        
+        var list:Array<chatMessage> = []
+        
+        if  anyObj is Array<AnyObject> {
+            
+           // var b:chatMessage = chatMessage()
+            
+            for jsonMsg in anyObj as! Array<AnyObject>{
+                var json = jsonMsg["message"] as! NSDictionary
+                if(json["type"] as AnyObject? as? String != "Chat"){ continue }
+                println(json["type"] as AnyObject? as? String)
+                var nameJson = (json["name"] as AnyObject? as? String) ?? "" // to get rid of null
+                var textJson  =  (json["text"]  as AnyObject? as? String) ?? ""
+                var timeJson  =  (json["time"]  as AnyObject? as? String) ?? ""
+                var imageJson  =  (json["image"]  as AnyObject? as? String) ?? ""
+                var typeJson  =  (json["type"]  as AnyObject? as? String) ?? ""
+                
+                list.append(chatMessage(name: nameJson, text: textJson, time: timeJson, image: imageJson, type: typeJson))
+            }
+            self.MessageTableView.reloadData()
+
+            
+        }
+        
+        return list
+        
+    }//func
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -217,7 +256,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     @IBAction func unwindToHome(segue: UIStoryboardSegue) {
         let sourceController = segue.sourceViewController as! MenuTableViewController
-        self.title = sourceController.currentItem
     }
     
      func dismiss(){
@@ -226,7 +264,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let menuTableViewController = segue.destinationViewController as! MenuTableViewController
-        menuTableViewController.currentItem = self.title!
         menuTableViewController.transitioningDelegate = self.menuTransitionManager
         self.menuTransitionManager.delegate = self
     }
@@ -234,12 +271,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     func client(client: PubNub!, didReceiveMessage message: PNMessageResult!, withStatus status: PNErrorStatus!) {
         println("******didReceiveMessage*****")
         
-        var stringData = message.data.message as! NSDictionary
-        var stringName = stringData["name"] as! String
-        var stringText = stringData["text"] as! String
-        var stringTime = stringData["time"] as! String
+        var stringData  = message.data.message as! NSDictionary
+        println(stringData)
+        var stringName  = stringData["name"] as! String
+        var stringText  = stringData["text"] as! String
+        var stringTime  = stringData["time"] as! String
         var stringImage = stringData["image"] as! String
-        var stringType = stringData["type"] as! String
+        var stringType  = stringData["type"] as! String
 
 
 
@@ -256,7 +294,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         var occ = event.data.presence.occupancy.stringValue
         occupancyButton.setTitle(occ, forState: .Normal)
         
-        var pubChat = chatMessage(name: "", text: "There was a \(event.data.presenceEvent)", time: getTime(), image: "",type: "Presence")
+        var pubChat = chatMessage(name: "", text: "There was a \(event.data.presenceEvent)", time: getTime(), image: " ",type: "Presence")
         
         var newDict = chatMessageToDictionary(pubChat)
         
