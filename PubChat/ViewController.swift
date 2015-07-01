@@ -87,7 +87,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         updateTableview()
         
         showIntroModal()
-        println("************View was loaded********")
     }
     
     
@@ -203,14 +202,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                         appDel.client = PubNub.clientWithConfiguration(config)
 
                         appDel.client?.addListener(self)
-                        
-                        appDel.client?.subscribeToChannels([chan], withPresence: false)
-                        
-                        appDel.client?.subscribeToPresenceChannels([chan])
-                        println(appDel.client)
-                        self.updateHistory()
-                        
-                        
+                        self.joinChannel(chan)
                     }
                 
                 }))
@@ -258,6 +250,23 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
        
     }
     
+    func joinChannel(channel: String){
+        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+        appDel.client?.subscribeToChannels([channel], withPresence: true)
+        appDel.client?.hereNowForChannel(channel, withCompletion: { (result, status) -> Void in
+            for ent in result.data.uuids as! NSArray{
+                var user = ent["uuid"] as! String
+                if (!contains(usersArray, user)){
+                    usersArray.append(user)
+                }
+                
+            }
+            var occ = result.data.occupancy.stringValue
+            self.occupancyButton.setTitle(occ, forState: .Normal)
+        })
+        updateHistory()
+    }
+    
     func updateHistory(){
         
         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
@@ -265,7 +274,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         appDel.client?.historyForChannel(chan, start: nil, end: nil, includeTimeToken: true, withCompletion: { (result, status) -> Void in
             
             chatMessageArray = self.parseJson(result.data.messages)
-            println(chatMessageArray)
             self.updateTableview()
             
         })
@@ -282,7 +290,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             for jsonMsg in anyObj as! Array<AnyObject>{
                 var json = jsonMsg["message"] as! NSDictionary
                 if(json["type"] as AnyObject? as? String != "Chat"){ continue }
-                println(json["type"] as AnyObject? as? String)
                 var nameJson = (json["name"] as AnyObject? as? String) ?? "" // to get rid of null
                 var textJson  =  (json["text"]  as AnyObject? as? String) ?? ""
                 var timeJson  =  (json["time"]  as AnyObject? as? String) ?? ""
@@ -367,7 +374,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             let newImage = UIImage(named: imageName)
             cell.userImage?.hidden = false
             cell.userImage.image = newImage
-            println("creating a chat message")
             
         }
         else if(chatMessageArray[indexPath.row].type as String == "Presence"){
@@ -375,7 +381,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             cell.nameLabel.text = chatMessageArray[indexPath.row].text as String
             cell.timeLabel.text = chatMessageArray[indexPath.row].time as String
             cell.userImage?.hidden = true
-            println("creating a presence message")
 
         }
 
@@ -418,7 +423,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         println("******didReceiveMessage*****")
         
         var stringData  = message.data.message as! NSDictionary
-        println(stringData)
         var stringName  = stringData["name"] as! String
         var stringText  = stringData["text"] as! String
         var stringTime  = stringData["time"] as! String
@@ -436,15 +440,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     func client(client: PubNub!, didReceivePresenceEvent event: PNPresenceEventResult!) {
         println("******didReceivePresenceEvent*****")
-        println(event.data)
         var occ = event.data.presence.occupancy.stringValue
         occupancyButton.setTitle(occ, forState: .Normal)
         
-        var pubChat = chatMessage(name: "", text: "There was a \(event.data.presenceEvent)", time: getTime(), image: " ",type: "Presence")
+        var pubChat = chatMessage(name: "", text: "\(event.data.presence.uuid) has \(event.data.presenceEvent)", time: getTime(), image: " ",type: "Presence")
         
         if (event.data.presenceEvent == "join"){
             //Add to array
-            usersArray.append(event.data.presence.uuid)
+            if (!contains(usersArray,event.data.presence.uuid)){
+                usersArray.append(event.data.presence.uuid)
+            }
         }
         else {
             // Check if in array, only delete if they are
@@ -467,7 +472,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         let numberOfRows = MessageTableView.numberOfRowsInSection(numberOfSections-1)
         
         if numberOfRows > 0 {
-            println(numberOfSections)
             let indexPath = NSIndexPath(forRow: numberOfRows-1, inSection: (numberOfSections-1))
             MessageTableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
         }
@@ -476,7 +480,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     
     func client(client: PubNub!, didReceiveStatus status: PNSubscribeStatus!) {
-        println("status")
     }
     
 }

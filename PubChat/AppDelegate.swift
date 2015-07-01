@@ -55,8 +55,6 @@ import UIKit
         
         client?.unsubscribeFromChannels([], withPresence: true)
         client?.unsubscribeFromPresenceChannels([])
-        //client?.publish("/(userName) has left", toChannel: chan, compressed: true, withCompletion: nil)
-        println("Shutting down")
     }
     
 
