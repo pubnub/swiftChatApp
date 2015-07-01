@@ -210,7 +210,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     override func viewWillAppear(animated: Bool) {
         self.title = chan
-        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate        
+        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         
@@ -229,7 +229,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         }
         
         if(userName != ""){
-            println("getting called here")
             updateHistory()
         }
        
@@ -270,8 +269,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         
         if  anyObj is Array<AnyObject> {
             
-           // var b:chatMessage = chatMessage()
-            
             for jsonMsg in anyObj as! Array<AnyObject>{
                 var json = jsonMsg["message"] as! NSDictionary
                 if(json["type"] as AnyObject? as? String != "Chat"){ continue }
@@ -290,7 +287,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         
         return list
         
-    }//func
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -323,9 +320,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     }
     
     func getTime() -> String{
-        let currentDate = NSDate()  //5 -  get the current date
+        let currentDate = NSDate()  // -  get the current date
         var dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "hh:mm a" //format style. Browse online to get a format that fits your needs.
+        dateFormatter.dateFormat = "hh:mm a" //format style to look like 00:00 am/pm
         var dateString = dateFormatter.stringFromDate(currentDate)
         
         return dateString
@@ -447,9 +444,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
 
         }
         
-        
-//        var pubChat = chatMessage(name: "", text: "\(event.data.presence.uuid) \(chattext)", time: getTime(), image: " ",type: "Presence")
-        
         if (event.data.presenceEvent == "join"){
             //Add to array
             if (!contains(usersArray,event.data.presence.uuid)){
@@ -464,7 +458,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
            
         }
         
-//        chatMessageArray.append(pubChat)
         updateChat()
 
       

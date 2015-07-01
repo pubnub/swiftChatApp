@@ -39,7 +39,6 @@ class MenuTableViewController: UITableViewController {
         println(menuItems[indexPath.row] as String)
         
         if(indexPath.row == 0){
-            //performSegueWithIdentifier("ChatPushedSegue", sender: self)
             showChannelModal()
         }
         
@@ -104,7 +103,7 @@ class MenuTableViewController: UITableViewController {
             let usernameTextField:UITextField = textFields.objectAtIndex(0) as! UITextField
             chan = usernameTextField.text
             if(chan == ""){
-                //self.showChannelModal()
+                self.showChannelModal()
             }
             else{
                 let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
@@ -118,10 +117,7 @@ class MenuTableViewController: UITableViewController {
     }
     
     
-    @IBAction func exitTapped(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: {});//This is intended to dismiss the Info sceen.
-        println("pressed")
-    }
+  
 
     
 }
