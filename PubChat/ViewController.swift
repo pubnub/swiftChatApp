@@ -60,7 +60,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     var introModalDidDisplay = false
     
-    var randomNumber = Int(arc4random_uniform(9))
+    var randomNumber = Int(arc4random_uniform(13))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -350,6 +350,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        tableView.allowsSelection = false
         
         let cell: TableViewCell = self.MessageTableView.dequeueReusableCellWithIdentifier("Cell") as! TableViewCell
         if(chatMessageArray[indexPath.row].type as String == "Chat"){
