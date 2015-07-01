@@ -81,6 +81,8 @@ class MenuTableViewController: UITableViewController {
                     self.showNameModal()
                 }
                 else{
+                  
+
                     
                 }
             }))
@@ -110,7 +112,8 @@ class MenuTableViewController: UITableViewController {
             }
             else{
                 chatMessageArray = []
-                appDel.client?.subscribeToChannels([chan], withPresence: true)
+                usersArray = []
+                //appDel.client?.subscribeToChannels([chan], withPresence: true)
             }
         }))
         

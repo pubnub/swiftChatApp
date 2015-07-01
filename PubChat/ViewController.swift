@@ -177,12 +177,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                     }
                     else{
                         self.introModalDidDisplay = true
-                        
                       
                         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
-                        
-                        appDel.client?.removeListener(self)
-                        
                         
                         let config = PNConfiguration(
                             publishKey: "demo-36",
@@ -190,9 +186,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                         
                         config.uuid = "\(userName)"
                         
+                        config.presenceHeartbeatValue = 30
+                        config.presenceHeartbeatInterval = 10
+                        
                         appDel.client = PubNub.clientWithConfiguration(config)
 
                         appDel.client?.addListener(self)
+                        
                         self.joinChannel(chan)
                     }
                 
@@ -234,6 +234,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         
         if(userName != ""){
             updateHistory()
+            joinChannel(chan)
         }
        
     }
