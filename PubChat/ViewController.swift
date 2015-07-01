@@ -171,6 +171,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                     let textFields:NSArray = loginAlert.textFields! as NSArray
                     let usernameTextField:UITextField = textFields.objectAtIndex(0) as! UITextField
                     userName = usernameTextField.text
+                    userName = userName.stringByReplacingOccurrencesOfString(" ", withString: "_", options: NSStringCompareOptions.LiteralSearch, range: nil)
                     if(userName == ""){
                         self.showIntroModal()
                     }
@@ -179,7 +180,10 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                         
                       
                         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
-
+                        
+                        appDel.client?.removeListener(self)
+                        
+                        
                         let config = PNConfiguration(
                             publishKey: "demo-36",
                             subscribeKey: "demo-36")
@@ -238,6 +242,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
         appDel.client?.subscribeToChannels([channel], withPresence: true)
         appDel.client?.hereNowForChannel(channel, withCompletion: { (result, status) -> Void in
+//            if(status.error){
+//                println(status.category)//**** Space in name 
+//                return
+//            }
+            
             for ent in result.data.uuids as! NSArray{
                 var user = ent["uuid"] as! String
                 if (!contains(usersArray, user)){
@@ -256,7 +265,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
         
         appDel.client?.historyForChannel(chan, start: nil, end: nil, includeTimeToken: true, withCompletion: { (result, status) -> Void in
-            
             chatMessageArray = self.parseJson(result.data.messages)
             self.updateTableview()
             
@@ -385,6 +393,30 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     @IBAction func occupancyButtonTapped(sender: AnyObject) {
         println(usersArray)
+        showOccupancyModal()
+    }
+    
+    
+    
+    func showOccupancyModal(){
+        
+        var result: String = ""
+        for user in usersArray {
+            if count(result) > 0 {
+                result += ","
+            }
+            result += user
+        }
+        var occMessage = ("\n".join(usersArray.map({ "• " + $0})))
+    
+        var occAlert:UIAlertController = UIAlertController(title: "Here Now:", message: occMessage, preferredStyle: UIAlertControllerStyle.Alert)
+        
+        occAlert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: {alertAction in
+            
+        }))
+        
+        self.presentViewController(occAlert, animated: true, completion: nil)
+
     }
     
     @IBAction func unwindToHome(segue: UIStoryboardSegue) {
@@ -422,8 +454,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     func client(client: PubNub!, didReceivePresenceEvent event: PNPresenceEventResult!) {
         println("******didReceivePresenceEvent*****")
+        println(event.data)
+        
+        
         var occ = event.data.presence.occupancy.stringValue
         occupancyButton.setTitle(occ, forState: .Normal)
+        
+        
         
         switch event.data.presenceEvent{
             case "join":

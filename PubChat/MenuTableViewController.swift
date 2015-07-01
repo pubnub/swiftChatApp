@@ -76,6 +76,7 @@ class MenuTableViewController: UITableViewController {
                 let textFields:NSArray = loginAlert.textFields! as NSArray
                 let usernameTextField:UITextField = textFields.objectAtIndex(0) as! UITextField
                 userName = usernameTextField.text
+                userName = userName.stringByReplacingOccurrencesOfString(" ", withString: "_", options: NSStringCompareOptions.LiteralSearch, range: nil)
                 if(userName == ""){
                     self.showNameModal()
                 }
@@ -90,7 +91,9 @@ class MenuTableViewController: UITableViewController {
     
     
     func showChannelModal() {
-        
+        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+        appDel.client?.unsubscribeFromChannels([chan],withPresence: true)
+
         var loginAlert:UIAlertController = UIAlertController(title: "Change Channel", message: "Please enter Channel name", preferredStyle: UIAlertControllerStyle.Alert)
         
         loginAlert.addTextFieldWithConfigurationHandler({
@@ -106,8 +109,6 @@ class MenuTableViewController: UITableViewController {
                 self.showChannelModal()
             }
             else{
-                let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
-                appDel.client?.unsubscribeFromChannels([],withPresence: true)
                 chatMessageArray = []
                 appDel.client?.subscribeToChannels([chan], withPresence: true)
             }
