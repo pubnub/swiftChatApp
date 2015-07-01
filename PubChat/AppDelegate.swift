@@ -52,9 +52,8 @@ import UIKit
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-        
-        client?.unsubscribeFromChannels([], withPresence: true)
-        client?.unsubscribeFromPresenceChannels([])
+        println("***********unsubscribing from \(chan)")
+        client?.unsubscribeFromChannels([chan], withPresence: true)
     }
     
 

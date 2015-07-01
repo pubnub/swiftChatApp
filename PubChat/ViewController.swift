@@ -65,20 +65,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
-//        
-//        let config = PNConfiguration(
-//            publishKey: "demo-36",
-//            subscribeKey: "demo-36")
-//        
-//         appDel.client? = PubNub.clientWithConfiguration(config)
-//        
-//         appDel.client?.addListener(self)
-//        
-//         appDel.client?.subscribeToChannels([chan], withPresence: false)
-//        
-//         appDel.client?.subscribeToPresenceChannels([chan])
-        
         self.MessageTextField.delegate = self
         MessageTableView.dataSource = self
         
@@ -87,6 +73,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         updateTableview()
         
         showIntroModal()
+        
     }
     
     
@@ -223,14 +210,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     override func viewWillAppear(animated: Bool) {
         self.title = chan
-        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
-//        appDel.client?.historyForChannel(chan, start: nil, end: nil, includeTimeToken: true, withCompletion: { (result, status) -> Void in
-//            
-//            chatMessageArray = self.parseJson(result.data.messages)
-//            self.updateTableview()
-//            
-//        })
-        
+        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate        
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         
@@ -246,6 +226,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                 textField.addTarget(self, action: "textFieldDidBeginEditing:", forControlEvents: UIControlEvents.EditingDidBegin)
                 
             }
+        }
+        
+        if(userName != ""){
+            println("getting called here")
+            updateHistory()
         }
        
     }
@@ -443,7 +428,27 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         var occ = event.data.presence.occupancy.stringValue
         occupancyButton.setTitle(occ, forState: .Normal)
         
-        var pubChat = chatMessage(name: "", text: "\(event.data.presence.uuid) has \(event.data.presenceEvent)", time: getTime(), image: " ",type: "Presence")
+        switch event.data.presenceEvent{
+            case "join":
+                var pubChat = chatMessage(name: "", text: "\(event.data.presence.uuid.uppercaseString) joined the chat", time: getTime(), image: " ",type: "Presence")
+                chatMessageArray.append(pubChat)
+
+            case "leave":
+                var pubChat = chatMessage(name: "", text: "\(event.data.presence.uuid.uppercaseString) left the chat", time: getTime(), image: " ",type: "Presence")
+                chatMessageArray.append(pubChat)
+
+            case "timeout":
+                var pubChat = chatMessage(name: "", text: "\(event.data.presence.uuid.uppercaseString) has timed out", time: getTime(), image: " ",type: "Presence")
+                chatMessageArray.append(pubChat)
+            
+            default:
+                var pubChat = chatMessage(name: "", text: "\(event.data.presence.uuid.uppercaseString) has timed out", time: getTime(), image: " ",type: "Presence")
+                chatMessageArray.append(pubChat)
+
+        }
+        
+        
+//        var pubChat = chatMessage(name: "", text: "\(event.data.presence.uuid) \(chattext)", time: getTime(), image: " ",type: "Presence")
         
         if (event.data.presenceEvent == "join"){
             //Add to array
@@ -459,7 +464,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
            
         }
         
-        chatMessageArray.append(pubChat)
+//        chatMessageArray.append(pubChat)
         updateChat()
 
       

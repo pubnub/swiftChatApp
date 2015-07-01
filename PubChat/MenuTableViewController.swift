@@ -109,10 +109,8 @@ class MenuTableViewController: UITableViewController {
             else{
                 let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
                 appDel.client?.unsubscribeFromChannels([],withPresence: true)
-                appDel.client?.unsubscribeFromPresenceChannels([])
                 chatMessageArray = []
-                appDel.client?.subscribeToChannels([chan], withPresence: false)
-                appDel.client?.subscribeToPresenceChannels([chan])
+                appDel.client?.subscribeToChannels([chan], withPresence: true)
             }
         }))
         
