@@ -42,7 +42,8 @@ var usersArray:[String] = []
 
 
 var userName = ""
-var chan = "Chat"
+var nameChanged = false
+var chan = "chat"
 
 class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MenuTransitionManagerDelegate, PNObjectEventListener {
     
@@ -60,7 +61,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     var introModalDidDisplay = false
     
     var randomNumber = Int(arc4random_uniform(9))
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -177,23 +177,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                     }
                     else{
                         self.introModalDidDisplay = true
-                      
-                        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
-                        
-                        let config = PNConfiguration(
-                            publishKey: "demo-36",
-                            subscribeKey: "demo-36")
-                        
-                        config.uuid = "\(userName)"
-                        
-                        config.presenceHeartbeatValue = 30
-                        config.presenceHeartbeatInterval = 10
-                        
-                        appDel.client = PubNub.clientWithConfiguration(config)
-
-                        appDel.client?.addListener(self)
-                        
-                        self.joinChannel(chan)
+                        self.initPubNub()
                     }
                 
                 }))
@@ -205,6 +189,25 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         
     }
 
+    func initPubNub(){
+        println("Init Pubnub")
+        
+        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+        
+        appDel.client?.unsubscribeFromChannels([chan], withPresence: true) // If pubnub exists, unsubscribe
+        appDel.client?.removeListener(self)
+        
+        var config = PNConfiguration( publishKey: "demo-36", subscribeKey: "demo-36")
+        config.uuid = userName
+        config.presenceHeartbeatValue = 30
+        config.presenceHeartbeatInterval = 10
+        
+        appDel.client = PubNub.clientWithConfiguration(config)
+        
+        appDel.client?.addListener(self)
+        
+        self.joinChannel(chan)
+    }
 
     deinit {
         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
@@ -233,8 +236,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         }
         
         if(userName != ""){
-            updateHistory()
             joinChannel(chan)
+        }
+        println("VIEW APPEARING")
+        
+        if (nameChanged) { // Name was Changed in the change name view
+            self.initPubNub()
+            nameChanged = false
         }
        
     }
@@ -244,7 +252,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         appDel.client?.subscribeToChannels([channel], withPresence: true)
         appDel.client?.hereNowForChannel(channel, withCompletion: { (result, status) -> Void in
 //            if(status.error){
-//                println(status.category)//**** Space in name 
+              //**** Space in name
 //                return
 //            }
             
@@ -420,22 +428,25 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
 
     }
     
-    @IBAction func unwindToHome(segue: UIStoryboardSegue) {
-        let sourceController = segue.sourceViewController as! MenuTableViewController
-    }
-    
      func dismiss(){
+        println("******************segue3")
         dismissViewControllerAnimated(true, completion: nil)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        println("******************segue2")
         let menuTableViewController = segue.destinationViewController as! MenuTableViewController
         menuTableViewController.transitioningDelegate = self.menuTransitionManager
         self.menuTransitionManager.delegate = self
+        
     }
     
     func client(client: PubNub!, didReceiveMessage message: PNMessageResult!, withStatus status: PNErrorStatus!) {
         println("******didReceiveMessage*****")
+        println(message.data)
+        println("*******UUID from message IS \(message.uuid)")
+
+
         
         var stringData  = message.data.message as! NSDictionary
         var stringName  = stringData["name"] as! String
@@ -456,6 +467,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     func client(client: PubNub!, didReceivePresenceEvent event: PNPresenceEventResult!) {
         println("******didReceivePresenceEvent*****")
         println(event.data)
+        println("*******UUID from presence IS \(event.uuid)")
         
         
         var occ = event.data.presence.occupancy.stringValue

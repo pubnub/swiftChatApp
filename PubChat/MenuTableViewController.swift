@@ -2,8 +2,6 @@
 //  MenuTableViewController.swift
 //  SlideMenu
 //
-//  Created by Simon Ng on 9/2/15.
-//  Copyright (c) 2015 AppCoda. All rights reserved.
 //
 
 import UIKit
@@ -14,8 +12,6 @@ class MenuTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -60,10 +56,15 @@ class MenuTableViewController: UITableViewController {
         let menuTableViewController = segue.sourceViewController as! MenuTableViewController
         
         let selectedRow = menuTableViewController.tableView.indexPathForSelectedRow()?.row
-      
+        
+        
+        if(segue.identifier == "ShowBlogSegue"){
+            println("VIEW SEG")
+        }
     }
     
     func showNameModal() {
+
         
             var loginAlert:UIAlertController = UIAlertController(title: "Change Name", message: "Please enter your new name", preferredStyle: UIAlertControllerStyle.Alert)
             
@@ -81,15 +82,13 @@ class MenuTableViewController: UITableViewController {
                     self.showNameModal()
                 }
                 else{
-                  
-
-                    
+                    println("******changing UUID to \(userName)")
+                    nameChanged = true
                 }
             }))
         
             self.presentViewController(loginAlert, animated: true, completion: nil)
     }
-    
     
     
     func showChannelModal() {
@@ -121,7 +120,5 @@ class MenuTableViewController: UITableViewController {
     }
     
     
-  
-
     
 }
