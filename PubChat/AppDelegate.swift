@@ -20,13 +20,15 @@ import UIKit
 //        let config = PNConfiguration(
 //            publishKey: "pub-c-f83b8b34-5dbc-4502-ac34-5073f2382d96",
 //            subscribeKey: "sub-c-34be47b2-f776-11e4-b559-0619f8945a4f")
+//        
+//        let config = PNConfiguration(
+//            publishKey: "demo-36",
+//            subscribeKey: "demo-36")
+//
+//        
+//        
+//        client = PubNub.clientWithConfiguration(config)
         
-        let config = PNConfiguration(
-            publishKey: "demo-36",
-            subscribeKey: "demo-36")
-
-        
-        client = PubNub.clientWithConfiguration(config)
         
         return true
     }
@@ -50,6 +52,11 @@ import UIKit
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        
+        client?.unsubscribeFromChannels([], withPresence: true)
+        client?.unsubscribeFromPresenceChannels([])
+        //client?.publish("/(userName) has left", toChannel: chan, compressed: true, withCompletion: nil)
+        println("Shutting down")
     }
     
 

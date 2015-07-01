@@ -25,8 +25,6 @@ class chatMessage : NSObject{
         self.image = image
         self.type = type
     }
-    
-
 }
 
 func chatMessageToDictionary(chatmessage : chatMessage) -> [String : NSString]{
@@ -40,6 +38,8 @@ func chatMessageToDictionary(chatmessage : chatMessage) -> [String : NSString]{
 }
 
 var chatMessageArray:[chatMessage] = []
+var usersArray:[String] = []
+
 
 var userName = ""
 var chan = "Chat"
@@ -54,7 +54,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     @IBOutlet weak var MessageTextField: UITextField!
     
     @IBOutlet var occupancyButton: UIButton!
-
         
     var menuTransitionManager = MenuTransitionManager()
     
@@ -66,14 +65,19 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
-        
-        appDel.client?.addListener(self)
-        
-        appDel.client?.subscribeToChannels([chan], withPresence: false)
-        
-        appDel.client?.subscribeToPresenceChannels([chan])
-        
+//        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+//        
+//        let config = PNConfiguration(
+//            publishKey: "demo-36",
+//            subscribeKey: "demo-36")
+//        
+//         appDel.client? = PubNub.clientWithConfiguration(config)
+//        
+//         appDel.client?.addListener(self)
+//        
+//         appDel.client?.subscribeToChannels([chan], withPresence: false)
+//        
+//         appDel.client?.subscribeToPresenceChannels([chan])
         
         self.MessageTextField.delegate = self
         MessageTableView.dataSource = self
@@ -83,7 +87,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         updateTableview()
         
         showIntroModal()
-
+        println("************View was loaded********")
     }
     
     
@@ -186,7 +190,29 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                     }
                     else{
                         self.introModalDidDisplay = true
+                        
+                      
+                        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+
+                        let config = PNConfiguration(
+                            publishKey: "demo-36",
+                            subscribeKey: "demo-36")
+                        
+                        config.uuid = "\(userName)"
+                        
+                        appDel.client = PubNub.clientWithConfiguration(config)
+
+                        appDel.client?.addListener(self)
+                        
+                        appDel.client?.subscribeToChannels([chan], withPresence: false)
+                        
+                        appDel.client?.subscribeToPresenceChannels([chan])
+                        println(appDel.client)
+                        self.updateHistory()
+                        
+                        
                     }
+                
                 }))
 
             
@@ -205,14 +231,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     override func viewWillAppear(animated: Bool) {
         self.title = chan
-        //chatMessageArray = []
         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
-        appDel.client?.historyForChannel(chan, start: nil, end: nil, includeTimeToken: true, withCompletion: { (result, status) -> Void in
-            
-            chatMessageArray = self.parseJson(result.data.messages)
-            self.updateTableview()
-            
-        })
+//        appDel.client?.historyForChannel(chan, start: nil, end: nil, includeTimeToken: true, withCompletion: { (result, status) -> Void in
+//            
+//            chatMessageArray = self.parseJson(result.data.messages)
+//            self.updateTableview()
+//            
+//        })
         
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
@@ -233,6 +258,18 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
        
     }
     
+    func updateHistory(){
+        
+        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+        
+        appDel.client?.historyForChannel(chan, start: nil, end: nil, includeTimeToken: true, withCompletion: { (result, status) -> Void in
+            
+            chatMessageArray = self.parseJson(result.data.messages)
+            println(chatMessageArray)
+            self.updateTableview()
+            
+        })
+    }
     
     func parseJson(anyObj:AnyObject) -> Array<chatMessage>{
         
@@ -360,7 +397,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     
     @IBAction func occupancyButtonTapped(sender: AnyObject) {
-        
+        println(usersArray)
     }
     
     @IBAction func unwindToHome(segue: UIStoryboardSegue) {
@@ -404,6 +441,18 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         occupancyButton.setTitle(occ, forState: .Normal)
         
         var pubChat = chatMessage(name: "", text: "There was a \(event.data.presenceEvent)", time: getTime(), image: " ",type: "Presence")
+        
+        if (event.data.presenceEvent == "join"){
+            //Add to array
+            usersArray.append(event.data.presence.uuid)
+        }
+        else {
+            // Check if in array, only delete if they are
+            if (contains(usersArray,event.data.presence.uuid)){
+                usersArray = usersArray.filter{$0 != event.data.presence.uuid}
+            }
+           
+        }
         
         chatMessageArray.append(pubChat)
         updateChat()

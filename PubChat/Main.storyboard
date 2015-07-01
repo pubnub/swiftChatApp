@@ -97,6 +97,9 @@
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="occupancyButtonTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="LLP-pg-TSP"/>
+                                </connections>
                             </button>
                         </barButtonItem>
                     </navigationItem>
@@ -104,7 +107,7 @@
                     <connections>
                         <outlet property="MessageTableView" destination="UhF-pa-Rnz" id="Oyp-ee-TSc"/>
                         <outlet property="MessageTextField" destination="nrF-PC-3Sh" id="SF2-Ut-f8M"/>
-                        <outlet property="occupancyButton" destination="ryp-Uk-zsr" id="eue-2I-dHO"/>
+                        <outlet property="occupancyButton" destination="ryp-Uk-zsr" id="xpC-c4-i73"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
@@ -217,25 +220,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O6j-Sg-PfB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2701" y="-575"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="Y96-71-RIk">
-            <objects>
-                <viewController id="Gs8-I9-CQ6" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="pAf-gT-s55"/>
-                        <viewControllerLayoutGuide type="bottom" id="axM-Dq-56o"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Xo6-R2-QCj">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="rcc-6E-OmL" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2169" y="65"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="b5O-Y7-KYa">
