@@ -43,7 +43,7 @@ var usersArray:[String] = []
 
 var userName = ""
 var nameChanged = false
-var chan = "chat"
+var chan = "PubNub + Swift"
 
 class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, MenuTransitionManagerDelegate, PNObjectEventListener {
     
@@ -69,6 +69,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         MessageTableView.dataSource = self
         
         self.MessageTableView.separatorStyle = UITableViewCellSeparatorStyle.None
+
+        //c.layer.cornerRadius = 10
+        //pingButton.layer.cornerRadius = 10
 
         updateTableview()
         
@@ -182,7 +185,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                 
                 }))
 
-            
             self.presentViewController(loginAlert, animated: true, completion: nil)
         
         }
@@ -197,7 +199,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         appDel.client?.unsubscribeFromChannels([chan], withPresence: true) // If pubnub exists, unsubscribe
         appDel.client?.removeListener(self)
         
-        var config = PNConfiguration( publishKey: "demo-36", subscribeKey: "demo-36")
+        var config = PNConfiguration( publishKey: "pub-c-f83b8b34-5dbc-4502-ac34-5073f2382d96", subscribeKey: "sub-c-34be47b2-f776-11e4-b559-0619f8945a4f")
         config.uuid = userName
         config.presenceHeartbeatValue = 30
         config.presenceHeartbeatInterval = 10
@@ -238,7 +240,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         if(userName != ""){
             joinChannel(chan)
         }
-        println("VIEW APPEARING")
         
         if (nameChanged) { // Name was Changed in the change name view
             self.initPubNub()
@@ -250,12 +251,18 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     func joinChannel(channel: String){
         let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
         appDel.client?.subscribeToChannels([channel], withPresence: true)
+        
+        let deviceToken: AnyObject? = NSUserDefaults.standardUserDefaults().objectForKey("deviceToken")
+        println("**********deviceToken is **** \(deviceToken)")
+        
+//        appDel.client?.addPushNotificationsOnChannels(["push"], withDevicePushToken: deviceToken as! NSData, andCompletion: { (PNAcknowledgmentStatus) -> Void in
+//            println("******PNAcknowledgmentStatus*****")
+//            println(PNAcknowledgmentStatus.errorData)
+//        })
+        
+        appDel.client?.addPushNotificationsOnChannels(["push"], withDevicePushToken: deviceToken as! NSData, andCompletion: nil)
+        
         appDel.client?.hereNowForChannel(channel, withCompletion: { (result, status) -> Void in
-//            if(status.error){
-              //**** Space in name
-//                return
-//            }
-            
             for ent in result.data.uuids as! NSArray{
                 var user = ent["uuid"] as! String
                 if (!contains(usersArray, user)){
@@ -264,7 +271,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                 
             }
             var occ = result.data.occupancy.stringValue
-            self.occupancyButton.setTitle(occ, forState: .Normal)
+                self.occupancyButton.setTitle(occ, forState: .Normal)
         })
         updateHistory()
     }
@@ -322,8 +329,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         var message = MessageTextField.text
         if(message == "") {return}
         else{
-            
-            
             var pubChat = chatMessage(name: userName, text: MessageTextField.text, time: getTime(), image: String(randomNumber), type: "Chat")
 
             var newDict = chatMessageToDictionary(pubChat)
@@ -345,9 +350,22 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         return dateString
     }
     
+
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return chatMessageArray.count;
     }
+    
+    func UIColorFromRGB(rgbValue: UInt) -> UIColor {
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
+    }
+    
+
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         tableView.allowsSelection = false
@@ -356,16 +374,23 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         if(chatMessageArray[indexPath.row].type as String == "Chat"){
             
             if(chatMessageArray[indexPath.row].name == userName){
-                cell.messageTextField.textColor = UIColor.blueColor()
-                cell.nameLabel.textColor = UIColor.blueColor()
-                cell.timeLabel.textColor = UIColor.blueColor()
+                cell.backgroundColor = UIColorFromRGB(0xECF0F1)
+                cell.messageTextField.backgroundColor = UIColorFromRGB(0xECF0F1)
             }
             else{
-                cell.messageTextField.textColor = UIColor.blackColor()
-                cell.nameLabel.textColor = UIColor.blackColor()
-                cell.timeLabel.textColor = UIColor.blackColor()
+                cell.backgroundColor = UIColor.whiteColor()
+                cell.messageTextField.backgroundColor = UIColor.whiteColor()
             }
             
+            if(contains(usersArray,chatMessageArray[indexPath.row].name)){
+                cell.hnButton.hidden = false;
+            }
+            else{
+                cell.hnButton.hidden = true;
+            }
+            cell.messageTextField.textColor = UIColor.blackColor()
+            cell.nameLabel.textColor = UIColorFromRGB(0x22A7F0)
+            cell.timeLabel.textColor = UIColor.blackColor()
             cell.messageTextField.text = chatMessageArray[indexPath.row].text as String
             cell.nameLabel.text = chatMessageArray[indexPath.row].name as String
             cell.timeLabel.text = chatMessageArray[indexPath.row].time as String
@@ -381,6 +406,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             cell.nameLabel.text = chatMessageArray[indexPath.row].text as String
             cell.timeLabel.text = chatMessageArray[indexPath.row].time as String
             cell.userImage?.hidden = true
+            cell.hnButton.hidden = true;
 
         }
 
@@ -388,9 +414,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-    }
     
     func updateTableview(){
         self.MessageTableView.reloadData()
@@ -402,11 +425,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     
     @IBAction func occupancyButtonTapped(sender: AnyObject) {
-        println(usersArray)
         showOccupancyModal()
     }
-    
-    
     
     func showOccupancyModal(){
         
@@ -430,24 +450,20 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     }
     
      func dismiss(){
-        println("******************segue3")
         dismissViewControllerAnimated(true, completion: nil)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        println("******************segue2")
         let menuTableViewController = segue.destinationViewController as! MenuTableViewController
         menuTableViewController.transitioningDelegate = self.menuTransitionManager
         self.menuTransitionManager.delegate = self
         
     }
     
-    func client(client: PubNub!, didReceiveMessage message: PNMessageResult!, withStatus status: PNErrorStatus!) {
+    func client(client: PubNub!, didReceiveMessage message: PNMessageResult!) {
         println("******didReceiveMessage*****")
         println(message.data)
         println("*******UUID from message IS \(message.uuid)")
-
-
         
         var stringData  = message.data.message as! NSDictionary
         var stringName  = stringData["name"] as! String
@@ -455,8 +471,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         var stringTime  = stringData["time"] as! String
         var stringImage = stringData["image"] as! String
         var stringType  = stringData["type"] as! String
-
-
 
         var newMessage = chatMessage(name: stringName, text: stringText, time: stringTime, image: stringImage, type: stringType)
         
@@ -527,8 +541,32 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     
     }
     
-    
-    func client(client: PubNub!, didReceiveStatus status: PNSubscribeStatus!) {
+    @IBAction func alertButtonTapped(sender: AnyObject) {
+        
+        var payload =
+        ["debug":true,
+            "apns":
+                ["alert":"Ping From \(userName)",
+                "badge":"1",
+                "sound":"default"]
+        ]
+        println("****Payload sent is ****")
+        println(payload)
+        
+        let appDel = UIApplication.sharedApplication().delegate! as! AppDelegate
+        
+        appDel.client?.publish(
+            "test",
+            toChannel: "push" as String,
+            mobilePushPayload: payload as [NSObject : AnyObject],
+            withCompletion: nil)
+        
+//        var sentAlert = UIAlertView()
+//        sentAlert.title = "Alert Sent"
+//        //sentAlert.message = (friendsArray[indexPath.row] as String).uppercaseString
+//        sentAlert.addButtonWithTitle("OK")
+//        sentAlert.show()
+
     }
     
 }

@@ -8,7 +8,7 @@ import UIKit
 
 class MenuTableViewController: UITableViewController {
     var menuItems = ["Change Channel", "Change Name"]
-    let blogSegueIdentifier = "ShowBlogSegue"
+    //let blogSegueIdentifier = "ShowBlogSegue"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,26 +45,23 @@ class MenuTableViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! MenuTableViewCell
-
-        // Configure the cell...
         cell.titleLabel.text = menuItems[indexPath.row]
         return cell
     }
     
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let menuTableViewController = segue.sourceViewController as! MenuTableViewController
-        
-        let selectedRow = menuTableViewController.tableView.indexPathForSelectedRow()?.row
-        
-        
-        if(segue.identifier == "ShowBlogSegue"){
-            println("VIEW SEG")
-        }
-    }
-    
+//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+//        let menuTableViewController = segue.sourceViewController as! MenuTableViewController
+//        
+//        let selectedRow = menuTableViewController.tableView.indexPathForSelectedRow()?.row
+//        
+//        
+//        if(segue.identifier == "ShowBlogSegue"){
+//            println("VIEW SEG")
+//        }
+//    }
+//    
     func showNameModal() {
-
         
             var loginAlert:UIAlertController = UIAlertController(title: "Change Name", message: "Please enter your new name", preferredStyle: UIAlertControllerStyle.Alert)
             

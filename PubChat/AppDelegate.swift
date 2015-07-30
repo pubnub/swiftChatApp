@@ -13,12 +13,63 @@ import UIKit
     var window: UIWindow?
 
     var client:PubNub?
+    var apnsID:NSString?
+    var dToken:NSData?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
+        let notificationType = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
+        let settings = UIUserNotificationSettings(forTypes: notificationType, categories: nil)
+        application.registerUserNotificationSettings(settings)
+        application.registerForRemoteNotifications()
+
         return true
     }
+    
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        let tokenChars = UnsafePointer<CChar>(deviceToken.bytes)
+        var tokenString = ""
+        
+        for var i = 0; i < deviceToken.length; i++ {
+            tokenString += String(format: "%02.2hhx", arguments: [tokenChars[i]])
+        }
+        
+        apnsID = tokenString
+        println("******apnsID is \(apnsID)")
+        dToken = deviceToken
+        println("******dToken is \(dToken)")
+        NSUserDefaults.standardUserDefaults().setObject(deviceToken, forKey: "deviceToken")
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        println("***********didFailToRegisterForRemoteNotificationsWithError")
+        println(error)
+    }
+   
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        
+        println("******Getting notification*****")
+        
+//        var message: NSString = ""
+//        var alert: AnyObject? = userInfo["aps"]
+//        
+//        println(userInfo["aps"])
+//        
+//        if((alert) != nil){
+//            var alert = UIAlertView()
+//            alert.title = "Title"
+//            alert.message = "Message"
+//            alert.addButtonWithTitle("OK")
+//            alert.show()
+//        }
+        
+    }
+    
+   
+
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.

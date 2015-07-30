@@ -13,6 +13,7 @@
 		092CF7311B3C64D000DBEC34 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 092CF72F1B3C64D000DBEC34 /* LaunchScreen.xib */; };
 		092CF73D1B3C64D000DBEC34 /* PubChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 092CF73C1B3C64D000DBEC34 /* PubChatTests.swift */; };
 		092CF74A1B3CABFB00DBEC34 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 092CF7491B3CABFB00DBEC34 /* TableViewCell.swift */; };
+		093295EC1B571CB3009B8A17 /* hereNowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093295EB1B571CB3009B8A17 /* hereNowView.swift */; };
 		098567B71B3DC89D00E00B9F /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098567B61B3DC89D00E00B9F /* MenuTableViewController.swift */; };
 		098567B91B3DC94300E00B9F /* MenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098567B81B3DC94300E00B9F /* MenuTableViewCell.swift */; };
 		098567BB1B3DCCCF00E00B9F /* MenuTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098567BA1B3DCCCF00E00B9F /* MenuTransitionManager.swift */; };
@@ -43,6 +44,8 @@
 		092CF73C1B3C64D000DBEC34 /* PubChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PubChatTests.swift; sourceTree = "<group>"; };
 		092CF7461B3C661200DBEC34 /* PubChat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubChat-Bridging-Header.h"; sourceTree = "<group>"; };
 		092CF7491B3CABFB00DBEC34 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		093295EB1B571CB3009B8A17 /* hereNowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = hereNowView.swift; sourceTree = "<group>"; };
+		09690D4B1B4C7FD60084C5A3 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		098567B61B3DC89D00E00B9F /* MenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
 		098567B81B3DC94300E00B9F /* MenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTableViewCell.swift; sourceTree = "<group>"; };
 		098567BA1B3DCCCF00E00B9F /* MenuTransitionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTransitionManager.swift; sourceTree = "<group>"; };
@@ -95,6 +98,7 @@
 			children = (
 				092CF7261B3C64D000DBEC34 /* AppDelegate.swift */,
 				092CF7281B3C64D000DBEC34 /* ViewController.swift */,
+				093295EB1B571CB3009B8A17 /* hereNowView.swift */,
 				092CF7491B3CABFB00DBEC34 /* TableViewCell.swift */,
 				098567B61B3DC89D00E00B9F /* MenuTableViewController.swift */,
 				098567BA1B3DCCCF00E00B9F /* MenuTransitionManager.swift */,
@@ -136,6 +140,7 @@
 		446D6D56AE2254683A2DA1BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				09690D4B1B4C7FD60084C5A3 /* libz.dylib */,
 				A6BC261C3A8D8AE48FD440F3 /* libPods-PubChat.a */,
 			);
 			name = Frameworks;
@@ -201,9 +206,16 @@
 				TargetAttributes = {
 					092CF7201B3C64D000DBEC34 = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = Y9X42V6EK7;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					092CF7351B3C64D000DBEC34 = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = Y9X42V6EK7;
 						TestTargetID = 092CF7201B3C64D000DBEC34;
 					};
 				};
@@ -289,6 +301,7 @@
 				098567BB1B3DCCCF00E00B9F /* MenuTransitionManager.swift in Sources */,
 				092CF74A1B3CABFB00DBEC34 /* TableViewCell.swift in Sources */,
 				092CF7291B3C64D000DBEC34 /* ViewController.swift in Sources */,
+				093295EC1B571CB3009B8A17 /* hereNowView.swift in Sources */,
 				092CF7271B3C64D000DBEC34 /* AppDelegate.swift in Sources */,
 				098567B91B3DC94300E00B9F /* MenuTableViewCell.swift in Sources */,
 			);
@@ -341,7 +354,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Stephen Blum (4G3RZ3V94T)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Stephen Blum (4G3RZ3V94T)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -363,6 +377,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "87a55e95-54cf-4263-9edc-3358808bb4e1";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -385,7 +400,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Stephen Blum (4G3RZ3V94T)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Stephen Blum (4G3RZ3V94T)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -400,6 +416,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "87a55e95-54cf-4263-9edc-3358808bb4e1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -411,9 +428,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Stephen Blum (4G3RZ3V94T)";
 				INFOPLIST_FILE = PubChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "87a55e95-54cf-4263-9edc-3358808bb4e1";
 				SWIFT_OBJC_BRIDGING_HEADER = "PubChat/PubChat-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -425,9 +444,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Stephen Blum (4G3RZ3V94T)";
 				INFOPLIST_FILE = PubChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "87a55e95-54cf-4263-9edc-3358808bb4e1";
 				SWIFT_OBJC_BRIDGING_HEADER = "PubChat/PubChat-Bridging-Header.h";
 			};
 			name = Release;
@@ -436,6 +457,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -447,6 +470,7 @@
 				INFOPLIST_FILE = PubChatTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PubChat.app/PubChat";
 			};
 			name = Debug;
@@ -455,6 +479,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -462,6 +488,7 @@
 				INFOPLIST_FILE = PubChatTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PubChat.app/PubChat";
 			};
 			name = Release;

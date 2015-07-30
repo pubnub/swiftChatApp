@@ -14,6 +14,7 @@ class TableViewCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var messageTextField: UITextView!
     @IBOutlet var userImage: UIImageView!
+    @IBOutlet var hnButton: hereNowView!
     
     
     
